@@ -1,12 +1,13 @@
 :root {
-  --bg: #0b1220;
-  --surface: #121b2e;
-  --border: #1e2a44;
-  --accent: #22d3ee;
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-  font-family: system-ui, 'Segoe UI', Arial, sans-serif;
-  color-scheme: dark;
+  --cream: #f4f0e6;
+  --black: #111111;
+  --yellow: #ffd21f;
+  --red: #ff4438;
+  --blue: #3d7bfd;
+  --green: #2fbd57;
+  --white: #ffffff;
+  font-family: Arial, 'Segoe UI', sans-serif;
+  color-scheme: light;
 }
 
 * {
@@ -16,8 +17,13 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--cream);
+  color: var(--black);
+}
+
+h1, h2, h3 {
+  font-family: 'Arial Black', 'Segoe UI', Arial, sans-serif;
+  letter-spacing: -0.5px;
 }
 
 #root {
