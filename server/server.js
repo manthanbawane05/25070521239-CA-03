@@ -1,6 +1,10 @@
 const express = require("express");
 const { MongoClient, ObjectId } = require("mongodb");
 const cors = require("cors");
+const bCrypt = require("bcrypt");
+const jwtToken = require("jsonwebtoken");
+
+const SECRET = "FLOW_PARTS_SECRET_TOKEN";
 
 const app = express();
 app.use(cors());
@@ -31,6 +35,8 @@ let memoryParts = exampleParts.map((part, index) => ({ _id: String(index + 1), .
 let nextMemoryId = memoryParts.length + 1;
 let memoryMessages = [];
 let nextMessageId = 1;
+let memoryUsers = [];
+let nextUserId = 1;
 
 async function connectToMongoDb() {
 
@@ -68,10 +74,115 @@ app.listen(port, () => {
 const myDb = client.db("flexiDB");
 const parts = myDb.collection("parts");
 const messages = myDb.collection("messages");
+const users = myDb.collection("users");
 
 app.get("/", (req, res) => {
 
-    res.send({ msg: "Welcome to FLEXI PC Parts API", mongo: mongoConnected });
+    res.send({ msg: "Welcome to Flow Parts API", mongo: mongoConnected });
+});
+
+// ---------- AUTH : accounts stored in the users collection ----------
+
+app.post("/signup", async (req, res) => {
+
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+
+        res.status(422).send({ msg: "name, email and password are required" });
+        return;
+    }
+
+    const hashedPass = await bCrypt.hash(password, 10);
+
+    if (mongoConnected) {
+
+        const existing = await users.findOne({ email: email });
+
+        if (existing != null) {
+
+            res.status(409).send({ msg: "An account with this email already exists" });
+            return;
+        }
+
+        await users.insertOne({ name: name, email: email, password: hashedPass });
+
+        const payLoad = { subject: email, name: name };
+
+        res.send({ jwtToken: jwtToken.sign(payLoad, SECRET), user: { name: name, email: email } });
+        return;
+    }
+
+    const existing = memoryUsers.find((user) => user.email === email);
+
+    if (existing != null) {
+
+        res.status(409).send({ msg: "An account with this email already exists" });
+        return;
+    }
+
+    memoryUsers.push({ _id: String(nextUserId++), name: name, email: email, password: hashedPass });
+
+    const payLoad = { subject: email, name: name };
+
+    res.send({ jwtToken: jwtToken.sign(payLoad, SECRET), user: { name: name, email: email }, memory: true });
+});
+
+app.post("/login", async (req, res) => {
+
+    const { email, password } = req.body;
+
+    const user = mongoConnected
+        ? await users.findOne({ email: email })
+        : memoryUsers.find((user) => user.email === email) || null;
+
+    if (user == null) {
+
+        res.status(401).send({ msg: "Invalid email or password" });
+        return;
+    }
+
+    const isCorrect = await bCrypt.compare(password, user.password);
+
+    if (isCorrect) {
+
+        const payLoad = {
+            subject: user.email,
+            name: user.name
+        }
+
+        res.send({ jwtToken: jwtToken.sign(payLoad, SECRET), user: { name: user.name, email: user.email } });
+    }
+    else {
+
+        res.status(401).send({ msg: "Invalid email or password" });
+    }
+
+});
+
+// Returns the signed-in user for a Bearer token sent by the frontend
+app.get("/me", (req, res) => {
+
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+
+    if (token == null) {
+
+        res.status(401).send({ msg: "No token provided" });
+        return;
+    }
+
+    try {
+
+        const decoded = jwtToken.verify(token, SECRET);
+
+        res.send({ user: { name: decoded.name, email: decoded.subject } });
+    }
+    catch (error) {
+
+        res.status(401).send({ msg: "Invalid or expired token" });
+    }
+
 });
 
 // Seed the parts with example data (only inserts if the collection is empty)

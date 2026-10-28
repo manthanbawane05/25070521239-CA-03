@@ -7,10 +7,10 @@ const About = () =>{
         <div className="page-cont">
 
             <MainContent>
-                <h1 className='page-title'>About FLEXI</h1>
+                <h1 className='page-title'>About Flow Parts</h1>
 
                 <p className='about-text'>
-                    FLEXI is a one-stop store for PC enthusiasts and builders. From flagship
+                    Flow Parts is a one-stop store for PC enthusiasts and builders. From flagship
                     processors and graphics cards to cooling and cabinets, we stock every
                     component you need to build your dream machine.
                 </p>

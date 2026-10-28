@@ -1,6 +1,6 @@
-# FLEXI - PC Parts Store
+# Flow Parts - PC Parts Store
 
-React.js frontend for the FLEXI PC parts store.
+React.js frontend for the Flow Parts PC parts store.
 
 ```bash
 npm install

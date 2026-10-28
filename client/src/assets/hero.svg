@@ -7,6 +7,6 @@
   <rect x="176" y="58" width="36" height="24" rx="3" fill="#22d3ee"/>
   <rect x="176" y="94" width="36" height="24" rx="3" fill="#334155" stroke="#22d3ee" stroke-width="1.5"/>
   <rect x="176" y="130" width="36" height="24" rx="3" fill="#334155" stroke="#22d3ee" stroke-width="1.5"/>
-  <text x="270" y="120" font-family="Arial" font-size="34" font-weight="bold" fill="#e2e8f0">FLEXI</text>
+  <text x="270" y="120" font-family="Arial" font-size="28" font-weight="bold" fill="#e2e8f0">FLOW PARTS</text>
   <text x="270" y="150" font-family="Arial" font-size="14" fill="#94a3b8">PC Parts Store</text>
 </svg>

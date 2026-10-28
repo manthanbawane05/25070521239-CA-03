@@ -1,4 +1,4 @@
-# FLEXI - PC Parts Store (25070521239-CA-03)
+# Flow Parts - PC Parts Store (25070521239-CA-03)
 
 A full-stack web application for browsing and managing PC parts, built with a
 React.js frontend, a Node.js (Express) backend, and MongoDB as the database
